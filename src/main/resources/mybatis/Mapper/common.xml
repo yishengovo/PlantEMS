@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace:写Dao的全类名，相当于是告诉MyBatis这个配置文件是实现哪一个接口-->
+<mapper namespace="cn.lingroup.mapper.CommonMapper">
+    <resultMap id="common1" type="cn.lingroup.pojo.FigureLinkPojo">
+        <result property="pictureLing" column="link_to_picture_name"/>
+        <result property="species" column="Species"/>
+        <result property="genus" column="Genus"/>
+        <result property="commonName" column="Common_Name"/>
+        <result property="ploidy" column="Ploidy"/>
+        <result property="chromosomeNumber" column="Chromosome_number"/>
+        <result property="genomeSize" column="Median_total_length"/>
+        <result property="proteinCount" column="Median_protein_count"/>
+        <result property="gcContent" column="Median_GC_content"/>
+    </resultMap>
+
+    <select id="queryFigureLinkInfo" resultMap="common1">
+        SELECT * FROM `overview_picture` WHERE `Species`= #{species}
+    </select>
+
+</mapper>

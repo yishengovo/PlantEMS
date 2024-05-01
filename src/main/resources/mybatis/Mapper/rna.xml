@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace:写Dao的全类名，相当于是告诉MyBatis这个配置文件是实现哪一个接口-->
+<mapper namespace="cn.lingroup.mapper.RNAMapper">
+    <resultMap id="rnaOther" type="cn.lingroup.pojo.RNAOther">
+        <result property="id" column="id"/>
+        <result property="species" column="Species"/>
+        <result property="view" column="View"/>
+        <result property="chromosome" column="Chromosome"/>
+        <result property="position" column="Position"/>
+        <result property="type" column="Type"/>
+        <result property="gene" column="Gene"/>
+        <result property="feature" column="Feature"/>
+        <result property="strand" column="Strand"/>
+        <result property="context" column="Context"/>
+    </resultMap>
+
+    <resultMap id="rnaM5cAraM6aBra" type="cn.lingroup.pojo.RNAm5cArabiM6aBra">
+        <result property="id" column="id"/>
+        <result property="species" column="Species"/>
+        <result property="view" column="View"/>
+        <result property="chromosome" column="Chromosome"/>
+        <result property="start" column="Start"/>
+        <result property="end" column="End"/>
+        <result property="summit" column="Summit"/>
+        <result property="type" column="Type"/>
+        <result property="gene" column="Gene"/>
+        <result property="feature" column="Feature"/>
+        <result property="strand" column="Strand"/>
+        <result property="context" column="Context"/>
+    </resultMap>
+
+    <resultMap id="rnaInfo1" type="cn.lingroup.pojo.Figure1Pojo">
+        <result property="name" column="Chromosome"/>
+        <result property="valueString" column="cou"/>
+    </resultMap>
+
+    <resultMap id="rnaInfo2" type="cn.lingroup.pojo.Figure2Pojo">
+        <result property="name" column="Feature"/>
+        <result property="valueString" column="cou"/>
+    </resultMap>
+
+    <resultMap id="overview" type="cn.lingroup.pojo.BrowserOverviewPojo">
+        <result property="species" column="Organism"/>
+        <result property="type" column="Mod_type"/>
+        <result property="instrument" column="Instrument"/>
+        <result property="accessionNumber" column="Accession_number"/>
+        <result property="pmid" column="PMID"/>
+        <result property="pmidLink" column="PMID_link"/>
+    </resultMap>
+
+    <select id="queryOverviewInfo" resultMap="overview">
+        SELECT * FROM `rna_browser_overview` WHERE `Organism`=#{species} AND `Mod_type`=#{type}
+    </select>
+
+    <select id="queryFigure1InfoRnaOther" resultMap="rnaInfo1">
+        SELECT `Chromosome`,COUNT(*) cou FROM `rna_final` WHERE `Species`=#{species} AND `Type`=#{type} GROUP BY
+        `Chromosome`;
+    </select>
+
+    <select id="queryFigure2InfoRnaOther" resultMap="rnaInfo2">
+        SELECT `Feature`,COUNT(*) cou FROM `rna_final` WHERE `Species`=#{species} AND `Type`=#{type} GROUP BY `Feature`
+    </select>
+
+    <select id="queryFigure1InfoRNAm5cArabiM6aBra" resultMap="rnaInfo1">
+        SELECT `Chromosome`,COUNT(*) cou FROM `rna_m5c_arabi_m6a_brassica` WHERE `Species`=#{species} AND `Type`=#{type}
+        GROUP BY `Chromosome`
+    </select>
+
+    <select id="queryFigure2InfoRNAm5cArabiM6aBra" resultMap="rnaInfo2">
+        SELECT `Feature`,COUNT(*) cou FROM `rna_m5c_arabi_m6a_brassica` WHERE `Species`=#{species} AND `Type`=#{type}
+        GROUP BY `Feature`
+    </select>
+
+    <select id="queryAllSpecies" resultType="java.lang.String">
+        SELECT `Species` FROM `rna_final` GROUP BY `Species` ORDER BY `Species`
+    </select>
+
+    <select id="queryAllChromosome" resultType="java.lang.String">
+        SELECT `Chromosome` FROM `rna_final` GROUP BY `Chromosome` ORDER BY `Chromosome`
+    </select>
+
+    <select id="queryAllTypes" resultType="java.lang.String">
+        SELECT `Type` FROM `rna_final` GROUP BY `Type` ORDER BY `Type`
+    </select>
+
+    <select id="queryTypeBySpecies" resultType="java.lang.String">
+        SELECT `Type` FROM `rna_final` WHERE `Species`=#{species} GROUP BY `Type` ORDER BY `Type`
+    </select>
+
+    <select id="queryChromosomeBySpecies" resultType="java.lang.String">
+        SELECT `Chromosome` FROM `rna_final` WHERE `Species`=#{species} GROUP BY `Chromosome` ORDER BY `Chromosome`
+    </select>
+
+    <select id="queryTypeBySpeciesAndChromosome" resultType="java.lang.String">
+        SELECT `Type` FROM `rna_final` WHERE `Species`=#{species} AND `Chromosome`=#{chromosome} GROUP BY `Type` ORDER
+        BY `Type`
+    </select>
+
+    <select id="queryRnaOtherInfoBySpeciesAndType" resultMap="rnaOther">
+        SELECT * FROM `rna_final` WHERE `Species`=#{species} AND `Type`=#{type} ORDER BY `Chromosome`
+    </select>
+
+    <select id="queryRnaOtherInfoBySpeciesAndTypeAndGeneName" resultMap="rnaOther">
+        SELECT * FROM `rna_final` WHERE `Species`=#{species} AND `Type`=#{type} AND `Gene`=#{geneName} ORDER BY
+        `Chromosome`
+    </select>
+
+    <select id="queryRnaOtherInformationBySpeciesChromosomeAndType" resultMap="rnaOther">
+        SELECT * FROM `rna_final` WHERE `Species`=#{species} AND `Chromosome`=#{chromosome} AND `Type`=#{type} AND
+        `Position` BETWEEN #{start} AND #{end} ORDER BY `Position`
+    </select>
+
+    <select id="queryRnaOtherInformationBySpeciesChromosome" resultMap="rnaOther">
+        SELECT * FROM `rna_final` WHERE `Species`=#{species} AND `Chromosome`=#{chromosome} AND `Position` BETWEEN
+        #{start} AND #{end} ORDER BY `Position`
+    </select>
+
+    <select id="queryRnaOtherInformationBySpeciesSequence" resultMap="rnaOther">
+        SELECT * FROM `rna_final` WHERE `Species`=#{species} AND `Context` LIKE #{sequence} ORDER BY
+        `Chromosome`,`Position`
+    </select>
+
+    <select id="queryRnaOtherInformationByType" resultMap="rnaOther">
+        SELECT * FROM `rna_final` WHERE `Type`=#{type} ORDER BY `Species`,`Chromosome`,`Position`
+    </select>
+
+    <select id="queryRNAm5cArabiM6aBraInfoBySpeciesAndType" resultMap="rnaM5cAraM6aBra">
+        SELECT * FROM `rna_m5c_arabi_m6a_brassica` WHERE `Species`=#{species} AND `Type`=#{type} ORDER BY `Chromosome`
+    </select>
+
+    <select id="queryRNAm5cArabiM6aBraInfoBySpeciesAndTypeAndGeneName" resultMap="rnaM5cAraM6aBra">
+        SELECT * FROM `rna_m5c_arabi_m6a_brassica` WHERE `Species`=#{species} AND `Type`=#{type} AND `Gene`=#{geneName}
+        ORDER BY `Chromosome`
+    </select>
+
+    <select id="queryRNAm5cArabiM6aBraInformationBySpeciesChromosomeAndType" resultMap="rnaM5cAraM6aBra">
+        SELECT * FROM `rna_m5c_arabi_m6a_brassica` WHERE `Species`=#{species} AND `Chromosome`=#{chromosome} AND
+        `Type`=#{type} AND `Start` BETWEEN #{start} AND #{end} AND `End` BETWEEN #{start} AND #{end} ORDER BY
+        `Start`,`End`
+    </select>
+
+    <select id="queryRNAm5cArabiM6aBraInformationBySpeciesChromosome" resultMap="rnaM5cAraM6aBra">
+        SELECT * FROM `rna_m5c_arabi_m6a_brassica` WHERE `Species`=#{species} AND `Chromosome`=#{chromosome} AND `Start`
+        BETWEEN #{start} AND #{end} AND `End` BETWEEN #{start} AND #{end} ORDER BY `Start`,`End`
+    </select>
+
+    <select id="queryRNAm5cArabiM6aBraInformationBySpeciesSequence" resultMap="rnaM5cAraM6aBra">
+        SELECT * FROM `rna_m5c_arabi_m6a_brassica` WHERE `Species`=#{species} AND `Context` LIKE #{sequence} ORDER BY
+        `Chromosome`,`Start`,`End`
+    </select>
+
+    <select id="queryRNAm5cArabiM6aBraInformationByType" resultMap="rnaM5cAraM6aBra">
+        SELECT * FROM `rna_m5c_arabi_m6a_brassica` WHERE `Type`=#{type} ORDER BY `Species`,`Chromosome`,`Start`,`End`
+    </select>
+
+    <select id="queryRnaOtherInformationById" resultMap="rnaOther">
+        SELECT * FROM `rna_final` WHERE `id`=#{id} ORDER BY `Species`,`Chromosome`,`Position`
+    </select>
+
+    <select id="queryRNAm5cArabiM6aBraInformationById" resultMap="rnaM5cAraM6aBra">
+        SELECT * FROM `rna_m5c_arabi_m6a_brassica` WHERE `id`=#{id} ORDER BY `Species`,`Chromosome`,`Start`,`End`
+    </select>
+</mapper>

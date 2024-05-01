@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace:写Dao的全类名，相当于是告诉MyBatis这个配置文件是实现哪一个接口-->
+<mapper namespace="cn.lingroup.mapper.DNAMapper">
+    <resultMap id="dnaOther" type="cn.lingroup.pojo.DNAother">
+        <result property="id" column="id"/>
+        <result property="species" column="Species"/>
+        <result property="view" column="View"/>
+        <result property="chromosome" column="Chromosome"/>
+        <result property="position" column="Position"/>
+        <result property="type" column="Type"/>
+        <result property="gene" column="Gene"/>
+        <result property="feature" column="Feature"/>
+        <result property="strand" column="Strand"/>
+        <result property="score" column="Score"/>
+        <result property="coverage" column="Coverage"/>
+        <result property="fraction" column="Fraction"/>
+        <result property="identificationQv" column="identificationQV"/>
+        <result property="ipdRation" column="IPDRatio"/>
+        <result property="context" column="Context"/>
+    </resultMap>
+
+    <resultMap id="dna5hmc" type="cn.lingroup.pojo.DNA5hmc">
+        <result property="id" column="id"/>
+        <result property="species" column="Species"/>
+        <result property="view" column="View"/>
+        <result property="chromosome" column="Chromosome"/>
+        <result property="start" column="Start"/>
+        <result property="end" column="End"/>
+        <result property="summit" column="Summit"/>
+        <result property="type" column="Type"/>
+        <result property="gene" column="Gene"/>
+        <result property="feature" column="Feature"/>
+        <result property="strand" column="Strand"/>
+        <result property="context" column="Context"/>
+    </resultMap>
+
+    <resultMap id="overview" type="cn.lingroup.pojo.BrowserOverviewPojo">
+        <result property="species" column="Organism"/>
+        <result property="type" column="Mod_type"/>
+        <result property="instrument" column="Instrument"/>
+        <result property="accessionNumber" column="Accession_number"/>
+        <result property="pmid" column="PMID"/>
+        <result property="pmidLink" column="PMID_link"/>
+    </resultMap>
+
+    <resultMap id="rnaInfo1" type="cn.lingroup.pojo.Figure1Pojo">
+        <result property="name" column="Chromosome"/>
+        <result property="valueString" column="cou"/>
+    </resultMap>
+
+    <resultMap id="rnaInfo2" type="cn.lingroup.pojo.Figure2Pojo">
+        <result property="name" column="Feature"/>
+        <result property="valueString" column="cou"/>
+    </resultMap>
+
+    <resultMap id="rnaInfo3" type="cn.lingroup.pojo.Figure3Pojo">
+        <result property="name" column="Coverage"/>
+        <result property="valueString" column="cou"/>
+    </resultMap>
+
+    <resultMap id="rnaInfo4" type="cn.lingroup.pojo.Figure4Pojo">
+        <result property="name" column="Score"/>
+        <result property="valueString" column="cou"/>
+    </resultMap>
+
+    <select id="queryOverviewInfo" resultMap="overview">
+        SELECT * FROM `dna_browser_overview` WHERE `Organism`=#{species} AND `Mod_type`=#{type}
+    </select>
+
+    <select id="queryFigure1InfoDnaOther" resultMap="rnaInfo1">
+        SELECT `Chromosome`,COUNT(*) cou FROM `6ma_rosa_chinensis_final` WHERE `Species`=#{species} AND `Type`=#{type}
+        GROUP BY `Chromosome`
+    </select>
+
+    <select id="queryFigure2InfoDnaOther" resultMap="rnaInfo2">
+        SELECT `Feature`,COUNT(*) cou FROM `6ma_rosa_chinensis_final` WHERE `Species`=#{species} AND `Type`=#{type}
+        GROUP BY `Feature`
+    </select>
+
+    <select id="queryFigure3InfoDnaOther" resultMap="rnaInfo3">
+        SELECT `Coverage`,COUNT(*) cou FROM `6ma_rosa_chinensis_final` WHERE `Species`=#{species} AND `Type`=#{type}
+        GROUP BY `Coverage`
+    </select>
+
+    <select id="queryFigure4InfoDnaOther" resultMap="rnaInfo4">
+        SELECT `Score`,COUNT(*) cou FROM `6ma_rosa_chinensis_final` WHERE `Species`=#{species} AND `Type`=#{type} GROUP
+        BY `Score`
+    </select>
+
+    <select id="queryFigure1InfoDna5hmc" resultMap="rnaInfo1">
+        SELECT `Chromosome`,COUNT(*) cou FROM `5hmc_rice_final` WHERE `Species`=#{species} AND `Type`='NA' GROUP BY
+        `Chromosome`
+    </select>
+
+    <select id="queryFigure2InfoDna5hmc" resultMap="rnaInfo2">
+        SELECT `Feature`,COUNT(*) cou FROM `5hmc_rice_final` WHERE `Species`=#{species} AND `Type`='NA' GROUP BY
+        `Feature`
+    </select>
+
+    <select id="queryAllSpecies" resultType="java.lang.String">
+        SELECT `Species` FROM `6ma_rosa_chinensis_final` GROUP BY `Species` ORDER BY `Species`
+    </select>
+
+    <select id="queryAllChromosome" resultType="java.lang.String">
+        SELECT `Chromosome` FROM `6ma_rosa_chinensis_final` GROUP BY `Chromosome` ORDER BY `Chromosome`
+    </select>
+
+    <select id="queryAllTypes" resultType="java.lang.String">
+        SELECT `Type` FROM `6ma_rosa_chinensis_final` GROUP BY `Type` ORDER BY `Type`
+    </select>
+
+    <select id="queryTypeBySpecies" resultType="java.lang.String">
+        SELECT `Type` FROM `6ma_rosa_chinensis_final` WHERE `Species`=#{species} GROUP BY `Type` ORDER BY `Type`
+    </select>
+
+    <select id="queryChromosomeBySpecies" resultType="java.lang.String">
+        SELECT `Chromosome` FROM `6ma_rosa_chinensis_final` WHERE `Species`=#{species} GROUP BY `Chromosome` ORDER BY
+        `Chromosome`
+    </select>
+
+    <select id="queryTypeBySpeciesAndChromosome" resultType="java.lang.String">
+        SELECT `Type` FROM `6ma_rosa_chinensis_final` WHERE `Species`=#{species} AND `Chromosome`=#{chromosome} GROUP BY
+        `Type` ORDER BY `Type`
+    </select>
+
+    <select id="queryDnaOtherInfoBySpeciesAndType" resultMap="dnaOther">
+        SELECT * FROM `6ma_rosa_chinensis_final` WHERE `Species`=#{species} AND `Type`=#{type} ORDER BY `Chromosome`
+    </select>
+
+    <select id="queryDnaOtherInfoBySpeciesAndTypeAndGeneName" resultMap="dnaOther">
+        SELECT * FROM `6ma_rosa_chinensis_final` WHERE `Species`=#{species} AND `Type`=#{type} AND `Gene`=#{geneName}
+        ORDER BY `Chromosome`
+    </select>
+
+    <select id="queryDnaOtherInformationBySpeciesChromosomeAndType" resultMap="dnaOther">
+        SELECT * FROM `6ma_rosa_chinensis_final` WHERE `Species`=#{species} AND `Chromosome`=#{chromosome} AND
+        `Type`=#{type} AND `Position` BETWEEN #{start} AND #{end} ORDER BY `Position`
+    </select>
+
+    <select id="queryDnaOtherInformationBySpeciesChromosome" resultMap="dnaOther">
+        SELECT * FROM `6ma_rosa_chinensis_final` WHERE `Species`=#{species} AND `Chromosome`=#{chromosome} AND
+        `Position` BETWEEN #{start} AND #{end} ORDER BY `Position`
+    </select>
+
+    <select id="queryDnaOtherInformationBySpeciesSequence" resultMap="dnaOther">
+        SELECT * FROM `6ma_rosa_chinensis_final` WHERE `Species`=#{species} AND `Context` LIKE #{sequence} ORDER BY
+        `Chromosome`,`Position`
+    </select>
+
+    <select id="queryDnaOtherInformationByType" resultMap="dnaOther">
+        SELECT * FROM `6ma_rosa_chinensis_final` WHERE `Type`=#{type} ORDER BY `Species`,`Chromosome`,`Position`
+    </select>
+
+    <select id="queryDnaOtherInformationById" resultMap="dnaOther">
+        SELECT * FROM `6ma_rosa_chinensis_final` WHERE `id`=#{id} ORDER BY `Species`,`Chromosome`,`Position`
+    </select>
+
+    <select id="queryDna5hmcInfoBySpeciesAndType" resultMap="dna5hmc">
+        SELECT * FROM `5hmc_rice_final` WHERE `Species`=#{species}
+    </select>
+
+    <select id="queryDna5hmcInfoBySpeciesAndTypeAndGeneName" resultMap="dna5hmc">
+        SELECT * FROM `5hmc_rice_final` WHERE `Species`=#{species} AND `Gene`=#{geneName}
+    </select>
+    <select id="queryDna5hmcInformationBySpeciesChromosomeAndType" resultMap="dna5hmc">
+        SELECT * FROM `5hmc_rice_final` WHERE `Species`=#{species} AND `Chromosome`=#{chromosome} AND `Type`=#{type} AND
+        `Start` BETWEEN #{start} AND #{end} AND `End` BETWEEN #{start} AND #{end} ORDER BY `Start`,`End`
+    </select>
+    <select id="queryDna5hmcInformationBySpeciesChromosome" resultMap="dna5hmc">
+        SELECT * FROM `5hmc_rice_final` WHERE `Species`=#{species} AND `Chromosome`=#{chromosome} AND `Start` BETWEEN
+        #{start} AND #{end} AND `End` BETWEEN #{start} AND #{end} ORDER BY `Start`,`End`
+    </select>
+    <select id="queryDna5hmcInformationBySpeciesSequence" resultMap="dna5hmc">
+        SELECT * FROM `5hmc_rice_final` WHERE `Species`=#{species} AND `Context` LIKE #{sequence} ORDER BY
+        `Species`,`Chromosome`,`Start`,`End`
+    </select>
+
+    <select id="queryDna5hmcOtherInformationByType" resultMap="dna5hmc">
+        SELECT * FROM `5hmc_rice_final` WHERE `Type`=#{type} ORDER BY `Species`,`Chromosome`,`Start`,`End`
+    </select>
+
+</mapper>

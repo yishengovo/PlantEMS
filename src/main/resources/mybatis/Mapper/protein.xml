@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace:写Dao的全类名，相当于是告诉MyBatis这个配置文件是实现哪一个接口-->
+<mapper namespace="cn.lingroup.mapper.ProteinMapper">
+    <resultMap id="myProtein" type="cn.lingroup.pojo.Protein">
+        <result property="id" column="id"/>
+        <result property="species" column="Species"/>
+        <result property="view" column="View"/>
+        <result property="accession" column="Accession"/>
+        <result property="fastaHeaders" column="Fasta_headers"/>
+        <result property="localization" column="Localization"/>
+        <result property="type" column="Type"/>
+        <result property="modifiedSequence" column="Modified_sequence"/>
+        <result property="position" column="Position"/>
+        <result property="massError" column="Mass_error"/>
+        <result property="peptideScore" column="Peptide_score"/>
+        <result property="charge" column="Charge"/>
+    </resultMap>
+
+    <resultMap id="overview" type="cn.lingroup.pojo.BrowserOverviewPojo">
+        <result property="species" column="Organism"/>
+        <result property="type" column="Mod_type"/>
+        <result property="instrument" column="Instrument"/>
+        <result property="accessionNumber" column="Accession_number"/>
+        <result property="pmid" column="PMID"/>
+        <result property="pmidLink" column="PMID_link"/>
+    </resultMap>
+
+    <select id="queryOverviewInfo" resultMap="overview">
+        SELECT * FROM `protein_browser_overview` WHERE `Organism`=#{species} AND `Mod_type`=#{type}
+    </select>
+
+    <select id="queryFigure3Info" resultType="java.lang.String">
+        SELECT `Mass_error` FROM `protein` WHERE `Species`=#{species} AND `Type`=#{type} AND `Mass_error` != 'NA' AND
+        `Mass_error` != '';
+    </select>
+
+    <select id="queryFigure4Info" resultType="java.lang.String">
+        SELECT `Peptide_score` FROM `protein` WHERE `Species`=#{species} AND `Type`=#{type} AND `Peptide_score` != 'NA'
+        AND `Peptide_score` != '';
+    </select>
+
+    <select id="queryAllSpecies" resultType="java.lang.String">
+        SELECT `Species` FROM `protein` GROUP BY `Species` ORDER BY `Species`
+    </select>
+
+    <select id="queryAllTypes" resultType="java.lang.String">
+        SELECT `Type` FROM `protein` GROUP BY `Type` ORDER BY `Type`
+    </select>
+
+    <select id="ajaxQueryTypesBySpecies" resultType="java.lang.String">
+        SELECT `Type` FROM `protein` WHERE Species=#{species} GROUP BY `Type` ORDER BY `Type`
+    </select>
+
+    <select id="queryInfoBySpeciesAndType" resultMap="myProtein">
+        SELECT * FROM `protein` WHERE `Species`=#{species} AND `Type`=#{type} ORDER BY `Accession`
+    </select>
+
+    <select id="queryInfoByAccession" resultMap="myProtein">
+        SELECT * FROM `protein` WHERE `Accession`=#{accession} ORDER BY `Accession`
+    </select>
+
+    <select id="queryInfoByPeptide" resultMap="myProtein">
+        SELECT * FROM `protein` WHERE `Species`=#{species} AND `Modified_sequence` like #{peptide} ORDER BY `Accession`
+    </select>
+
+    <select id="queryInfoByType" resultMap="myProtein">
+        SELECT * FROM `protein` WHERE `Type`=#{type} ORDER BY `Species`,`Modified_sequence`
+    </select>
+
+    <select id="queryInfoById" resultMap="myProtein">
+        SELECT * FROM `protein` WHERE `id`=#{id} ORDER BY `Species`,`Modified_sequence`
+    </select>
+</mapper>
